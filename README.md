@@ -204,7 +204,7 @@ This will create:
 * `Service` (`hello-world`) - `manifests/hello-world-service.yaml`
 * `Ingress` (`hello-world-ingress`) - `manifests/hello-world-ingress.yaml`
 
-### Verify Step 4
+**Verify the status of the `hello-world` pod**
 
 Check the status of the `hello-world` pod. It should be in the `Running` state, but it will only have one container.
 
@@ -231,7 +231,7 @@ kubectl patch deployment hello-world \
 
 The Vault webhook will detect the annotations on the new pod and inject the `vault-agent` init and sidecar containers. The agent will authenticate using the `hello-world` role and render the TLS certificates into the pod\'s filesystem.
 
-### Verify Step 5
+### Verify the status of the new pod
 
 A new pod will be created. Check that the new pod has two containers (the application container and the `vault-agent` sidecar).
 
@@ -259,3 +259,21 @@ Once the new pod is in the `Running` state, you can verify that the secrets were
     You should see `tls.crt` and `tls.key` listed in the output, confirming the process was successful.
 
 ---
+
+### Verify Ingress
+
+Map the host to your Minikube IP (so your browser/curl resolves the name):
+
+```bash
+MINIKUBE_IP=$(minikube ip)
+echo "$MINIKUBE_IP hello-world.local" | sudo tee -a /etc/hosts
+```
+
+Test the Ingress:
+
+```bash
+curl -I http://hello-world.local
+curl -kI https://hello-world.local   # -k since cert is self-signed
+```
+
+You should see HTTP 200 OK (or 301/308 if your browser rewrites), and the HTTPS request should succeed with -k.
