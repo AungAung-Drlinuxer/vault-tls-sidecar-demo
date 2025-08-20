@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-world-ingress
+  # Optional: Add annotations specific to your Ingress Controller if needed.
+  # For example, for an NGINX Ingress Controller:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  # IMPORTANT: You must have an Ingress Controller running in your cluster.
+  # Replace "nginx" with the name of your IngressClass (e.g., gce, alb).
+  ingressClassName: nginx
+  rules:
+  - host: "hello-world.local" # <-- Replace with your public domain name
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hello-world # Must match the Service name
+            port:
+              number: 80     # Must match the Service port

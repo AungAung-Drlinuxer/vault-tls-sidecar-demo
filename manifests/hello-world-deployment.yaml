@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+  labels:
+    app: hello-world
+spec:
+  selector:
+    matchLabels:
+      app: hello-world
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+      labels:
+        app: hello-world
+    spec:
+      serviceAccountName: app
+      containers:
+      - name: hello-world
+        image: crccheck/hello-world
+        ports:
+        - containerPort: 8000

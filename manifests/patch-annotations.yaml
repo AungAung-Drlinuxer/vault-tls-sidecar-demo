@@ -1,0 +1,16 @@
+spec:
+  template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "hello-world"
+        # Use agent-inject-template to extract specific fields from the Vault secret.
+        # NOTE: The path .Data.data.crt assumes a KVv2 secrets engine. For KVv1, use .Data.crt
+        vault.hashicorp.com/agent-inject-template-tls.crt: |
+          {{- with secret "secret/certs/hello-world" -}}
+          {{ .Data.data.crt }}
+          {{- end -}}
+        vault.hashicorp.com/agent-inject-template-tls.key: |
+          {{- with secret "secret/certs/hello-world" -}}
+          {{ .Data.data.key }}
+          {{- end -}}
